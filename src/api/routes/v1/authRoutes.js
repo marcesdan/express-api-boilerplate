@@ -1,15 +1,8 @@
-const express = require('express');
-const validate = require('express-validation');
-const controller = require('../../controllers/auth.controller');
-const oAuthLogin = require('../../middlewares/auth').oAuth;
-const {
-  login,
-  register,
-  oAuth,
-  refresh,
-  sendPasswordReset,
-  passwordReset,
-} = require('../../validations/auth.validation');
+import express from 'express';
+import { validate } from 'express-validation';
+import { oAuth } from '../../middlewares/authMiddleware';
+import authValidation from '../../validations/authValidation';
+import authController from '../../authControllers/authController';
 
 const router = express.Router();
 
@@ -41,8 +34,7 @@ const router = express.Router();
  * @apiError (Bad Request 400)  ValidationError  Some parameters may contain invalid values
  */
 router.route('/register')
-  .post(validate(register), controller.register);
-
+  .post(validate(authValidation.register), authController.register);
 
 /**
  * @api {post} v1/auth/login Login
@@ -72,8 +64,7 @@ router.route('/register')
  * @apiError (Unauthorized 401)  Unauthorized     Incorrect email or password
  */
 router.route('/login')
-  .post(validate(login), controller.login);
-
+  .post(validate(authValidation.login), authController.login);
 
 /**
  * @api {post} v1/auth/refresh-token Refresh Token
@@ -95,14 +86,13 @@ router.route('/login')
  * @apiError (Unauthorized 401)  Unauthorized     Incorrect email or refreshToken
  */
 router.route('/refresh-token')
-  .post(validate(refresh), controller.refresh);
-
+  .post(validate(authValidation.refresh), authController.refresh);
 
 router.route('/send-password-reset')
-  .post(validate(sendPasswordReset), controller.sendPasswordReset);
+  .post(validate(authValidation.sendPasswordReset), authController.sendPasswordReset);
 
 router.route('/reset-password')
-  .post(validate(passwordReset), controller.resetPassword);
+  .post(validate(authValidation.passwordReset), authController.resetPassword);
 
 /**
  * @api {post} v1/auth/facebook Facebook Login
@@ -123,7 +113,7 @@ router.route('/reset-password')
  * @apiError (Unauthorized 401)  Unauthorized    Incorrect access_token
  */
 router.route('/facebook')
-  .post(validate(oAuth), oAuthLogin('facebook'), controller.oAuth);
+  .post(validate(oAuth), authValidation.oAuthLogin('facebook'), authController.oAuth);
 
 /**
  * @api {post} v1/auth/google Google Login
@@ -144,7 +134,6 @@ router.route('/facebook')
  * @apiError (Unauthorized 401)  Unauthorized    Incorrect access_token
  */
 router.route('/google')
-  .post(validate(oAuth), oAuthLogin('google'), controller.oAuth);
-
+  .post(validate(oAuth), authValidation.oAuthLogin('google'), authController.oAuth);
 
 module.exports = router;

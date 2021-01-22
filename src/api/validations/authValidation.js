@@ -1,6 +1,6 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
-module.exports = {
+export default {
   // POST /v1/auth/register
   register: {
     body: {

@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const crypto = require('crypto');
-const moment = require('moment-timezone');
+import mongoose from 'mongoose';
+import crypto from 'crypto';
+import moment from 'moment-timezone';
 
 /**
  * Refresh Token Schema
@@ -35,7 +35,8 @@ passwordResetTokenSchema.statics = {
   async generate(user) {
     const userId = user._id;
     const userEmail = user.email;
-    const resetToken = `${userId}.${crypto.randomBytes(40).toString('hex')}`;
+    const resetToken = `${userId}.${crypto.randomBytes(40)
+      .toString('hex')}`;
     const expires = moment()
       .add(2, 'hours')
       .toDate();
@@ -54,4 +55,4 @@ passwordResetTokenSchema.statics = {
  * @typedef RefreshToken
  */
 const PasswordResetToken = mongoose.model('PasswordResetToken', passwordResetTokenSchema);
-module.exports = PasswordResetToken;
+export default PasswordResetToken;

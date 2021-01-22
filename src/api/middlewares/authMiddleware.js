@@ -1,15 +1,15 @@
-const httpStatus = require('http-status');
-const passport = require('passport');
-const User = require('../models/user.model');
-const APIError = require('../utils/APIError');
+import httpStatus from 'http-status';
+import passport from 'passport';
+import User from '../models/user';
+import ApiError from '../utils/ApiError';
 
-const ADMIN = 'admin';
-const LOGGED_USER = '_loggedUser';
+export const ADMIN = 'admin';
+export const LOGGED_USER = '_loggedUser';
 
 const handleJWT = (req, res, next, roles) => async (err, user, info) => {
   const error = err || info;
   const logIn = Promise.promisify(req.logIn);
-  const apiError = new APIError({
+  const apiError = new ApiError({
     message: error ? error.message : 'Unauthorized',
     status: httpStatus.UNAUTHORIZED,
     stack: error ? error.stack : undefined,
@@ -41,14 +41,9 @@ const handleJWT = (req, res, next, roles) => async (err, user, info) => {
   return next();
 };
 
-exports.ADMIN = ADMIN;
-exports.LOGGED_USER = LOGGED_USER;
+export const authorize = (roles = User.roles) => (req, res, next) => passport.authenticate(
+  'jwt', { session: false },
+  handleJWT(req, res, next, roles),
+)(req, res, next);
 
-exports.authorize = (roles = User.roles) => (req, res, next) =>
-  passport.authenticate(
-    'jwt', { session: false },
-    handleJWT(req, res, next, roles),
-  )(req, res, next);
-
-exports.oAuth = service =>
-  passport.authenticate(service, { session: false });
+export const oAuth = (service) => passport.authenticate(service, { session: false });

@@ -5,9 +5,9 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const moment = require('moment-timezone');
 const app = require('../../../index');
-const User = require('../../models/user.model');
-const RefreshToken = require('../../models/refreshToken.model');
-const PasswordResetToken = require('../../models/passwordResetToken.model');
+const User = require('../../models/user');
+const RefreshToken = require('../../models/refreshToken');
+const PasswordResetToken = require('../../models/passwordResetToken');
 const authProviders = require('../../services/authProviders');
 const emailProvider = require('../../services/emails/emailProvider');
 
